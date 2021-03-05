@@ -1,0 +1,107 @@
+
+# ----- {{ s.name }} -----
+
+plan:{{ s.name }}:
+  stage: plan 📝
+  script:
+    - sh code/ci/plan/plan.sh
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - services/{{ s.name }}/*
+      - code/logs/log_format.json
+      - code/snippets/*
+      - code/terraform/*
+      - code/vcl/*
+  artifacts:
+    untracked: false
+    expire_in: 1 days
+    when: always
+    paths:
+        - "services/*/*plan*"
+
+test:{{ s.name }}:
+  stage: test 🧪
+  script:
+    - sh code/ci/test/test.sh
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - services/{{ s.name }}/*
+      - code/logs/log_format.json
+      - code/snippets/*
+      - code/terraform/*
+      - code/vcl/*
+  artifacts:
+    untracked: false
+    expire_in: 1 days
+    when: always
+    paths:
+        - "services/*/*plan*"
+
+apply:{{ s.name }}:
+  stage: apply ⚙️
+  script:
+    - sh code/ci/apply/apply.sh
+  only:
+    refs:
+      - master
+    changes:
+      - services/{{ s.name }}/*
+      - code/logs/log_format.json
+      - code/snippets/*
+      - code/terraform/*
+      - code/vcl/*
+  dependencies:
+      - plan:{{ s.name }}
+  artifacts:
+    untracked: false
+    expire_in: 1 days
+    when: always
+    paths:
+        - "services/*/*plan*"
+        - "services/*/*output.json"
+
+deploy:{{ s.name }}:
+  stage: deploy 🚀
+  script:
+    - sh code/ci/deploy/deploy.sh
+  only:
+    refs:
+      - master
+    changes:
+      - services/{{ s.name }}/*
+      - code/logs/log_format.json
+      - code/snippets/*
+      - code/terraform/*
+      - code/vcl/*
+  when: manual
+  dependencies:
+      - apply:{{ s.name }}
+  artifacts:
+    untracked: false
+    expire_in: 1 days
+    when: always
+    paths:
+        - "services/*/*plan*"
+
+rapid-rollback:{{ s.name }}:
+  stage: rapid-rollback 🔄
+  script:
+    - sh code/ci/rollback/rollback.sh
+  only:
+    refs:
+      - master
+    changes:
+      - services/{{ s.name }}/*
+      - code/logs/log_format.json
+      - code/snippets/*
+      - code/terraform/*
+      - code/vcl/*
+  when: manual
+  dependencies:
+    - apply:{{ s.name }}
+
+# ------------------------------------------------

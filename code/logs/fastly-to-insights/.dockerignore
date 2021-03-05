@@ -1,0 +1,11 @@
+build.sh
+creds.env
+.vscode
+services.env
+docker-compose.yml
+Dockerfile
+README.md
+assets/*
+.gitignore
+infrastructure/*
+config.env

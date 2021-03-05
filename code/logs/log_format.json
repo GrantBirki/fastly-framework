@@ -1,0 +1,57 @@
+{
+  "timestamp_start": "%{begin:%Y-%m-%dT%H:%M:%S}t",
+  "timestamp_end": "%{end:%Y-%m-%dT%H:%M:%S%z}t",
+  "time_elapsed": "%{time.elapsed.usec}V",
+  "http2": "%{if(fastly_info.is_h2, \"true\", \"false\")}V",
+  "is_tls": "%{if (req.is_ssl, \"true\", \"false\")}V",
+  "tls_version": "%{cstr_escape(tls.client.protocol)}V",
+  "cipher": "%{cstr_escape(tls.client.cipher)}V",
+  "cipher_sha": "%{cstr_escape(tls.client.ciphers_sha)}V",
+  "tls_ext_sha": "%{cstr_escape(tls.client.tlsexts_sha)}V",
+  "sni_name": "%{cstr_escape(tls.client.servername)}V",
+  "client_ip": "%{req.http.Fastly-Client-IP}V",
+  "geo": {
+    "fastly_pop": "%{server.datacenter}V",
+    "geo_city": "%{client.geo.city}V",
+    "geo_country_code": "%{client.geo.country_code}V",
+    "continent_code": "%{client.geo.continent_code}V",
+    "geo_region": "%{client.geo.region}V",
+    "geo_zip_code": "%{client.geo.postal_code}V",
+    "geo_conn_speed": "%{client.geo.conn_speed}V",
+    "geo_conn_type": "%{client.geo.conn_type}V"
+  },
+  "request": {
+    "request": "%{req.request}V",
+    "fastly_orig_host": "%{req.http.Fastly-Orig-Host}V",
+    "host": "%{Host}i",
+    "url": "%{json.escape(req.url)}V",
+    "referer": "%{json.escape(req.http.Referer)}V",
+    "user_agent": "%{json.escape(req.http.User-Agent)}V",
+    "accept_language": "%{json.escape(req.http.Accept-Language)}V",
+    "accept_charset": "%{json.escape(req.http.Accept-Charset)}V",
+    "header_size": "%{req.header_bytes_read}V",
+    "body_size": "%{req.body_bytes_read}V"
+  },
+  "response": {
+    "status": "%>s",
+    "content_type": "%{Content-Type}o",
+    "method": "%m",
+    "header_size": "%{resp.header_bytes_written}V",
+    "body_size": "%B",
+    "query_string": "%q",
+    "path": "%U",
+    "domain": "%V",
+    "connection_status": "%X"
+  },
+  "cache": {
+    "cacheable": "%{if(fastly_info.state ~\"^(HIT|MISS)(?:-|$)\", \"true\", \"false\")}V",
+    "cache_status": "%{regsub(fastly_info.state, \"^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*\", \"\\2\\3\") }V",
+    "cache_control": "%{Cache-Control}o",
+    "age": "%{Age}o",
+    "expires": "%{Expires}o",
+    "last_modified": "%{Last-Modified}o",
+    "etag": "%{ETag}o",
+    "object_hits": "%{obj.hits}V",
+    "last_use": "%{obj.lastuse}V"
+  }
+}

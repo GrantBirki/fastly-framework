@@ -1,0 +1,294 @@
+stages:
+  - repo-check 🗺️
+  - plan 📝
+  - test 🧪
+  - metrics build-and-push 📊
+  - approval 📯
+  - apply ⚙️
+  - deploy 🚀
+  - rapid-rollback 🔄
+  - metrics deploy 📊
+
+default:
+  image: <GitLab URL>/<repo>/<image>:<tag>
+
+# add alert-bp to bypass this stage in commit message
+merge-alert:
+  stage: repo-check 🗺️
+  script: sh code/ci/repo-check/merge-alert.sh
+  only:
+    refs:
+      - merge_requests
+    variables:
+      - $CI_COMMIT_MESSAGE !~ /alert-bp/
+
+# add approval-bp to your commit message to bypass this stage
+approval:
+  stage: approval 📯
+  script:
+    - bash code/ci/approval/approval.sh prod
+  allow_failure: false
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - services/*/*
+      - code/logs/log_format.json
+      - code/snippets/*
+      - code/terraform/*
+      - code/vcl/*
+    variables:
+      - $CI_COMMIT_MESSAGE !~ /approval-bp/
+
+metrics:build-and-push:
+  stage: metrics build-and-push 📊
+  image: <docker image for DIND>/docker:stable
+  services:
+    - name : <docker image for DIND>/docker:stable
+      alias: docker
+  tags:
+    - docker
+  script:
+    - sh code/ci/metrics/metrics-build-and-push-prep.sh
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - code/logs/fastly-to-insights/app.py
+      - code/logs/fastly-to-insights/Dockerfile
+    variables:
+      - $CI_COMMIT_MESSAGE !~ /ci-metrics-build-bypass/
+
+metrics:deploy:
+  stage: metrics deploy 📊
+  script:
+    - bash code/ci/metrics/metrics-deploy.sh
+  only:
+    refs:
+      - master
+    changes:
+      - code/logs/fastly-to-insights/app.py
+      - code/logs/fastly-to-insights/Dockerfile
+      - code/logs/fastly-to-insights/infrastructure/*
+    variables:
+      - $CI_COMMIT_MESSAGE !~ /ci-metrics-deploy-bypass/
+
+# ------------------------------------- EXAMPLE TEMPLATE SECTION -------------------------------------
+# This section defines two services: nonprod.example.com and www.example.com
+# You could potentially have dozens of services or perhaps even one. This guide demonstrates
+# have a nonprod and a production Fastly service.
+# docs/new-service.md
+
+# ----- Example Service (nonprod.example.com) ----- # add this line with a simple service name
+
+plan:nonprod.example.com: # Change this line
+  stage: plan 📝
+  script:
+    - sh code/ci/plan/plan.sh
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - services/nonprod.example.com/* # Change this line
+      - code/logs/log_format.json
+      - code/snippets/*
+      - code/terraform/*
+      - code/vcl/*
+  artifacts:
+    untracked: false
+    expire_in: 1 days
+    when: always
+    paths:
+        - "services/*/*plan*"
+
+test:nonprod.example.com: # Change this line
+  stage: test 🧪
+  script:
+    - sh code/ci/test/test.sh
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - services/nonprod.example.com/* # Change this line
+      - code/logs/log_format.json
+      - code/snippets/*
+      - code/terraform/*
+      - code/vcl/*
+  artifacts:
+    untracked: false
+    expire_in: 1 days
+    when: always
+    paths:
+        - "services/*/*plan*"
+
+apply:nonprod.example.com: # Change this line
+  stage: apply ⚙️
+  script:
+    - sh code/ci/apply/apply.sh
+  only:
+    refs:
+      - master
+    changes:
+      - services/nonprod.example.com/* # Change this line
+      - code/logs/log_format.json
+      - code/snippets/*
+      - code/terraform/*
+      - code/vcl/*
+  dependencies:
+      - plan:nonprod.example.com # Change this line
+  artifacts:
+    untracked: false
+    expire_in: 1 days
+    when: always
+    paths:
+        - "services/*/*plan*"
+        - "services/*/*output.json"
+
+deploy:nonprod.example.com: # Change this line
+  stage: deploy 🚀
+  script:
+    - sh code/ci/deploy/deploy.sh
+  only:
+    refs:
+      - master
+    changes:
+      - services/nonprod.example.com/* # Change this line
+      - code/logs/log_format.json
+      - code/snippets/*
+      - code/terraform/*
+      - code/vcl/*
+  when: manual
+  dependencies:
+      - apply:nonprod.example.com # Change this line
+  artifacts:
+    untracked: false
+    expire_in: 1 days
+    when: always
+    paths:
+        - "services/*/*plan*"
+
+rapid-rollback:nonprod.example.com: # Change this line
+  stage: rapid-rollback 🔄
+  script:
+    - sh code/ci/rollback/rollback.sh
+  only:
+    refs:
+      - master
+    changes:
+      - services/nonprod.example.com/* # Change this line
+      - code/logs/log_format.json
+      - code/snippets/*
+      - code/terraform/*
+      - code/vcl/*
+  when: manual
+  dependencies:
+    - apply:nonprod.example.com # Change this line
+
+# --------------------------------------------------------------------------
+
+# ----- Prod Example Service (www.example.com) ----- # add this line with a simple service name
+
+plan:www.example.com: # Change this line
+  stage: plan 📝
+  script:
+    - sh code/ci/plan/plan.sh
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - services/www.example.com/* # Change this line
+      - code/logs/log_format.json
+      - code/snippets/*
+      - code/terraform/*
+      - code/vcl/*
+  artifacts:
+    untracked: false
+    expire_in: 1 days
+    when: always
+    paths:
+        - "services/*/*plan*"
+
+test:www.example.com: # Change this line
+  stage: test 🧪
+  script:
+    - sh code/ci/test/test.sh
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - services/www.example.com/* # Change this line
+      - code/logs/log_format.json
+      - code/snippets/*
+      - code/terraform/*
+      - code/vcl/*
+  artifacts:
+    untracked: false
+    expire_in: 1 days
+    when: always
+    paths:
+        - "services/*/*plan*"
+
+apply:www.example.com: # Change this line
+  stage: apply ⚙️
+  script:
+    - sh code/ci/apply/apply.sh
+  only:
+    refs:
+      - master
+    changes:
+      - services/www.example.com/* # Change this line
+      - code/logs/log_format.json
+      - code/snippets/*
+      - code/terraform/*
+      - code/vcl/*
+  dependencies:
+      - plan:www.example.com # Change this line
+  artifacts:
+    untracked: false
+    expire_in: 1 days
+    when: always
+    paths:
+        - "services/*/*plan*"
+        - "services/*/*output.json"
+
+deploy:www.example.com: # Change this line
+  stage: deploy 🚀
+  script:
+    - sh code/ci/deploy/deploy.sh
+  only:
+    refs:
+      - master
+    changes:
+      - services/www.example.com/* # Change this line
+      - code/logs/log_format.json
+      - code/snippets/*
+      - code/terraform/*
+      - code/vcl/*
+  when: manual
+  dependencies:
+      - apply:www.example.com # Change this line
+  artifacts:
+    untracked: false
+    expire_in: 1 days
+    when: always
+    paths:
+        - "services/*/*plan*"
+
+rapid-rollback:www.example.com: # Change this line
+  stage: rapid-rollback 🔄
+  script:
+    - sh code/ci/rollback/rollback.sh
+  only:
+    refs:
+      - master
+    changes:
+      - services/www.example.com/* # Change this line
+      - code/logs/log_format.json
+      - code/snippets/*
+      - code/terraform/*
+      - code/vcl/*
+  when: manual
+  dependencies:
+    - apply:www.example.com # Change this line
+
+# --------------------------------------------------------------------------
