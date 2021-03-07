@@ -3,6 +3,7 @@ FASTLY TERRAFORM SERVICE CONFIGURATION
 DO NOT REMOVE ANY ID COMMENTS - Example: #ID0001
 You MAY remove the TIP: comments
 Before you begin please ensure you have correctly edited your config.tf file.
+Documentation: docs/terraform-reference.md
 */
 
 resource "fastly_service_v1" "fastly-service" {
