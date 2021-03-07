@@ -18,7 +18,37 @@ Benefits:
 * Adopt *Infrastructure as Code* methodologies with Terraform
 * Create your own pipeline stages for robust testing, alerts, approval, and much more
 
+## Documentation 📚
+
+### Table of Contents
+
+Here is the table of contents for the documentation folder. See below for other doc links.
+
+New to Fastly? The [Getting Started](docs/getting-started.md) doc is your place to start.
+
+View the following documents for specific details around each subject:
+
+* [getting-started](docs/getting-started.md) - The best place for newcomers
+* [learning](docs/learning.md) - A guide for learning all things Fastly
+* [fastly-to-insights](code/logs/fastly-to-insights/README.md) - Aggregated metrics collection from Fastly to New Relic
+* [new-service](docs/new-service.md) - A guide for creating a new service in Fastly using this repo
+* [pipeline](docs/pipeline.md) - General Pipeline framework information
+* [rapid-rollback](docs/rapid-rollback.md) - Information about the rapid-rollback stage of the pipeline
+* [slack](docs/slack.md) - For setting up Slack integrations with this pipeline
+* [terraform-reference](docs/terraform-reference.md) - How to use common Terraform blocks to configure your Fastly service
+* [vcl-include-and-snippets](docs/vcl-include-and-snippets.md) - Details about VCL include statements vs snippets. This guide has examples about how to use both and the key differences between them.
+
+### Additional Documentation
+
+The following links are to other doc pages and READMEs in this repo that are not in this specific folder.
+
+* [ci folder details readme](/code/ci/README.md) - Details about the `/code/ci` folder
+* [fastly-ci readme](/code/ci/docker/README.md) - Details about the stock CICD image with Terraform
+* [logs folder readme](/code/logs/README.md) - Details about the logs folder
+
 ## Demos
+
+The following section will show screenshots and details for a demo pipeline deployment to Fastly.
 
 ### 1. Create a Merge Request
 
@@ -56,7 +86,13 @@ If you have the `slack` integration configured you will recieve notification abo
 
 ![fastly-ci-activation](docs/assets/fastly-ci-activation.png)
 
-### 6. Rapid-Rollback
+### 6. Deployed to Fastly
+
+Hooray! Your change has been successfully deployed to Fastly!
+
+![fastly-new-version](docs/assets/fastly-new-version.png)
+
+### 7. Rapid-Rollback
 
 If something goes wildly wrong you can always rollback your changes via the `rapid-rollback` stage. Doing so will revert to the last active version in Fastly.
 
@@ -71,34 +107,6 @@ The demo section above just shows two services running through the pipeline: `no
 The example below shows many jobs running at once. They had testing errors so they failed and hence haulted the pipeline from continuing.
 
 ![fastly-multiple-jobs](docs/assets/fastly-multiple-jobs.png)
-
-## Documentation 📚
-
-### Table of Contents
-
-Here is the table of contents for the documentation folder. See below for other doc links.
-
-New to Fastly? The [Getting Started](docs/getting-started.md) doc is your place to start.
-
-View the following documents for specific details around each subject:
-
-* [getting-started](docs/getting-started.md) - The best place for newcomers
-* [learning](docs/learning.md) - A guide for learning all things Fastly
-* [fastly-to-insights](code/logs/fastly-to-insights/README.md) - Aggregated metrics collection from Fastly to New Relic
-* [new-service](docs/new-service.md) - A guide for creating a new service in Fastly using this repo
-* [pipeline](docs/pipeline.md) - General Pipeline framework information
-* [rapid-rollback](docs/rapid-rollback.md) - Information about the rapid-rollback stage of the pipeline
-* [slack](docs/slack.md) - For setting up Slack integrations with this pipeline
-* [terraform-reference](docs/terraform-reference.md) - How to use common Terraform blocks to configure your Fastly service
-* [vcl-include-and-snippets](docs/vcl-include-and-snippets.md) - Details about VCL include statements vs snippets. This guide has examples about how to use both and the key differences between them.
-
-### Additional Documentation
-
-The following links are to other doc pages and READMEs in this repo that are not in this specific folder.
-
-* [ci folder details readme](/code/ci/README.md) - Details about the `/code/ci` folder
-* [fastly-ci readme](/code/ci/docker/README.md) - Details about the stock CICD image with Terraform
-* [logs folder readme](/code/logs/README.md) - Details about the logs folder
 
 ## Contributing
 
