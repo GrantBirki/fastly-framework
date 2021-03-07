@@ -1,6 +1,6 @@
 # Fastly to Insights 🚀
 
-Maintained repo for this project available on [GitHub](https://github.com/GrantBirki/fastly-to-insights).
+Maintained repo for this project available on [GitHub](https://github.com/GrantBirki/fastly-to-insights). Check it out for the latest information. One thing to note is that at the time of this writing, the maintained project does not include info on running in ECS with Terraform. You may follow either guide depending on what you are looking to accomplish (deploying to AWS ECS or building your own solution)
 
 This is the New Relic blessed way to get your Fastly metrics into Insights, packaged as a Docker container image for ease of use!
 
