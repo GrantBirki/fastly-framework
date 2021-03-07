@@ -6,6 +6,8 @@ A Framework for Using Fastly with Terraform, Automation, and CICD
 
 This project is an open source framework for creating a CICD pipeline with Terraform that builds Fastly services.
 
+The CICD framework portion was created using GitLab-CI but it can be adapted to run with GitHub actions, CircleCI, and others.
+
 Benefits:
 
 * Using Git as a version control system for all Fastly changes
@@ -16,9 +18,59 @@ Benefits:
 * Adopt *Infrastructure as Code* methodologies with Terraform
 * Create your own pipeline stages for robust testing, alerts, approval, and much more
 
-## Demo
+## Demos
+
+### 1. Create a Merge Request
+
+To kick off the pipeline, create a `merge request` with your changes. This demo will make changes to a `nonprod` and `prod` service as an example.
+
+### 2. ChatOps Notification
+
+Once your pipeline starts running, check Slack (or other messaging service if configured) for a notification that your MR has been created and the pipeline is now running.
+
+![cdn-bot-mr](docs/assets/cdn-bot-mr.png)
+
+### 3. Merge Request Pipeline
+
+Check out your `merge request` pipeline to see how its doing. It will `plan` your changes with Terraform, `test` them with self configured tests, and then create an `approval` for deployment.
+
+Note: `TFsec` will not be covered in this framework for simplicity. However, it is very easy to add on your own.
 
 ![dev-and-prod-pipeline](docs/assets/dev-and-prod-pipeline.png)
+
+If you have the `slack` integration configured with `servicenow` you will recieve an alert like the one below for approval requests:
+
+![fastly-ci-approval](docs/assets/fastly-ci-approval.png)
+
+### 4. Merge Changes
+
+Once your `merge request` pipeline passes you are free to merge your changes to the `main` or `master` branch. This will trigger the `deployment` pipeline!
+
+### 5. Deployment Pipeline
+
+This pipeline is triggered from a successful `merge` to `main`/`master` branches. The `deploy` stage is a manual action so you may deploy `nonprod` first to validate changes before deploying to `prod`. The `rapid-rollback` stage exists to revert your changes if something goes wrong.
+
+![dev-and-prod-deploy-pipeline](docs/assets/dev-and-prod-deploy-pipeline.png)
+
+If you have the `slack` integration configured you will recieve notification about successful deployments in Slack like the one below:
+
+![fastly-ci-activation](docs/assets/fastly-ci-activation.png)
+
+### 6. Rapid-Rollback
+
+If something goes wildly wrong you can always rollback your changes via the `rapid-rollback` stage. Doing so will revert to the last active version in Fastly.
+
+If you have the `slack` integration configured you will recieve a notification like the one below:
+
+![fastly-ci-rollback](docs/assets/fastly-ci-rollback.png)
+
+#### Large Job Support
+
+The demo section above just shows two services running through the pipeline: `nonprod` and `prod` for example. However, the pipeline can support hundreds of concurrent jobs and for many services at once.
+
+The example below shows many jobs running at once. They had testing errors so they failed and hence haulted the pipeline from continuing.
+
+![fastly-multiple-jobs](docs/assets/fastly-multiple-jobs.png)
 
 ## Documentation 📚
 
@@ -47,3 +99,7 @@ The following links are to other doc pages and READMEs in this repo that are not
 * [ci folder details readme](/code/ci/README.md) - Details about the `/code/ci` folder
 * [fastly-ci readme](/code/ci/docker/README.md) - Details about the stock CICD image with Terraform
 * [logs folder readme](/code/logs/README.md) - Details about the logs folder
+
+## Contributing
+
+You are welcome to send pull requests to this repo. All and any contributors are welcome.

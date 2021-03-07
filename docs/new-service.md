@@ -38,6 +38,12 @@ If you wish to get a better understand about what is created through the automat
 
 Note: You may also find it helpful to checkout the [vcl-include-and-snippets](vcl-include-and-snippets.md) guide to see how different Shared VCL and Snippet statements are used from the automated generation.
 
+### Create a new Fastly Service Demo
+
+Here is a screenshot of the `make service` command being run to create a new Fastly service.
+
+![make-service](assets/make-service.png)
+
 ## Manual Creation (good for learning) 📚
 
 Follow the numbered steps below to create a service via the pipeline manually.
