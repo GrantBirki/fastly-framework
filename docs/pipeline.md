@@ -16,7 +16,13 @@ This page will cover information about the Fastly CICD pipeline and its stages.
 
 ## Before you begin
 
-Please note that Fastly is considered a tier 0 service by most organizations. Incorrect changes to this pipeline have the ability to impact entire production sites. Always use best judgement.
+The pipeline expects the following variables to be set in order to run:
+
+* `FASTLY_API_KEY` - **Required** - So the pipeline can authenticate Terraform to your Fastly account
+* `AWS VARS...` - **Required** - You will need to configure variables to authenticate with AWS if you choose to use an S3/DynamoDB backend for your Terraform state. Note that once you setup these variables you will need to use them correctly in the `plan`, `test`, and `apply` stages of the pipeline. Look for the comment block in each talking about this.
+* `SLACK_URL` - **Optional** - So the pipeline can POST Slack messages to a channel of your choice
+* `SERVICENOW_PROD_PASSWORD` - **Optional** - So the pipeline can publish approval requests to ServiceNow
+* `SERVICENOW_PROD_USER` - **Optional** - So the pipeline can publish approval requests to ServiceNow
 
 ## Approval
 
