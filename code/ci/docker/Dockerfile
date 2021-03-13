@@ -10,7 +10,7 @@ RUN unzip awscliv2.zip
 RUN ./aws/install
 
 # Install CURL
-RUN apt-get isntall curl -y
+RUN apt-get install curl -y
 
 # Install Python
 RUN apt-get install -y python3-minimal
