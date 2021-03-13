@@ -2,12 +2,12 @@ stages:
   - repo-check 🗺️
   - plan 📝
   - test 🧪
-  - metrics build-and-push 📊
-  - approval 📯
+#   - metrics build-and-push 📊 # optional for publishing metrics to New Relic
+#   - approval 📯 # optional for sending automated change requests to ServiceNow
   - apply ⚙️
   - deploy 🚀
   - rapid-rollback 🔄
-  - metrics deploy 📊
+#   - metrics deploy 📊 # optional for publishing metrics to New Relic
 
 default:
   image: <GitLab URL>/<repo>/<image>:<tag>
@@ -22,56 +22,59 @@ merge-alert:
     variables:
       - $CI_COMMIT_MESSAGE !~ /alert-bp/
 
+# approval is an optional job - only leave in if you use ServiceNow and want to send automated Change Requests to it
 # add approval-bp to your commit message to bypass this stage
-approval:
-  stage: approval 📯
-  script:
-    - bash code/ci/approval/approval.sh prod
-  allow_failure: false
-  only:
-    refs:
-      - merge_requests
-    changes:
-      - services/*/*
-      - code/logs/log_format.json
-      - code/snippets/*
-      - code/terraform/*
-      - code/vcl/*
-    variables:
-      - $CI_COMMIT_MESSAGE !~ /approval-bp/
+# approval:
+#   stage: approval 📯
+#   script:
+#     - bash code/ci/approval/approval.sh prod
+#   allow_failure: false
+#   only:
+#     refs:
+#       - merge_requests
+#     changes:
+#       - services/*/*
+#       - code/logs/log_format.json
+#       - code/snippets/*
+#       - code/terraform/*
+#       - code/vcl/*
+#     variables:
+#       - $CI_COMMIT_MESSAGE !~ /approval-bp/
 
-metrics:build-and-push:
-  stage: metrics build-and-push 📊
-  image: <docker image for DIND>/docker:stable
-  services:
-    - name : <docker image for DIND>/docker:stable
-      alias: docker
-  tags:
-    - docker
-  script:
-    - sh code/ci/metrics/metrics-build-and-push-prep.sh
-  only:
-    refs:
-      - merge_requests
-    changes:
-      - code/logs/fastly-to-insights/app.py
-      - code/logs/fastly-to-insights/Dockerfile
-    variables:
-      - $CI_COMMIT_MESSAGE !~ /ci-metrics-build-bypass/
+# optional - only leave in if you are using New Relic and want to send Fastly metrics to it
+# metrics:build-and-push:
+#   stage: metrics build-and-push 📊
+#   image: <docker image for DIND>/docker:stable
+#   services:
+#     - name : <docker image for DIND>/docker:stable
+#       alias: docker
+#   tags:
+#     - docker
+#   script:
+#     - sh code/ci/metrics/metrics-build-and-push-prep.sh
+#   only:
+#     refs:
+#       - merge_requests
+#     changes:
+#       - code/logs/fastly-to-insights/app.py
+#       - code/logs/fastly-to-insights/Dockerfile
+#     variables:
+#       - $CI_COMMIT_MESSAGE !~ /ci-metrics-build-bypass/
 
-metrics:deploy:
-  stage: metrics deploy 📊
-  script:
-    - bash code/ci/metrics/metrics-deploy.sh
-  only:
-    refs:
-      - master
-    changes:
-      - code/logs/fastly-to-insights/app.py
-      - code/logs/fastly-to-insights/Dockerfile
-      - code/logs/fastly-to-insights/infrastructure/*
-    variables:
-      - $CI_COMMIT_MESSAGE !~ /ci-metrics-deploy-bypass/
+# optional - only leave in if you are using New Relic and want to send Fastly metrics to it
+# metrics:deploy:
+#   stage: metrics deploy 📊
+#   script:
+#     - bash code/ci/metrics/metrics-deploy.sh
+#   only:
+#     refs:
+#       - master
+#     changes:
+#       - code/logs/fastly-to-insights/app.py
+#       - code/logs/fastly-to-insights/Dockerfile
+#       - code/logs/fastly-to-insights/infrastructure/*
+#     variables:
+#       - $CI_COMMIT_MESSAGE !~ /ci-metrics-deploy-bypass/
 
 # ------------------------------------- EXAMPLE TEMPLATE SECTION -------------------------------------
 # This section defines two services: nonprod.example.com and www.example.com
