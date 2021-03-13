@@ -6,6 +6,6 @@ GitLab Example:
 
 ```bash
 docker login registry.gitlab.com
-docker build -t registry.gitlab.com/<account>/<repo> .
-docker push registry.gitlab.com/<account>/<repo>
+docker build -t registry.gitlab.com/<account>/<repo>/<image>:<tag> .
+docker push registry.gitlab.com/<account>/<repo>/<image>:<tag>
 ```
