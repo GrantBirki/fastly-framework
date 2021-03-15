@@ -47,13 +47,14 @@ then
         cat check
         echo "\033[31;1mERROR: Terraform should not destroy Fastly services. Expected results are Add/Change only.\033[0;m\n"
 
+        # Uncomment this block if you are using the Slack integration
         # CURL to post Slack message
-        curl -v -X POST $SLACK_URL \
-        -H "Content-Type: application/json" \
-        -d \
-        '{
-            "text": ">❌ *Plan Stage Failed:* `'$FASTLY_SERVICE'`"
-        }'
+        # curl -v -X POST $SLACK_URL \
+        # -H "Content-Type: application/json" \
+        # -d \
+        # '{
+        #     "text": ">❌ *Plan Stage Failed:* `'$FASTLY_SERVICE'`"
+        # }'
 
         exit 1
         
@@ -63,12 +64,13 @@ then
         cat check
         echo "\033[34;1m[!] No Changes are being made. Are you really sure you wish to continue the pipeline? Please ensure your changes are correct. You may proceed with caution. \033[0;m"
 
-        curl -v -X POST $SLACK_URL \
-        -H "Content-Type: application/json" \
-        -d \
-        '{
-            "text": ">⚠️ *Terraform Warnings:* `'$CI_JOB_NAME'` - <'$CI_PIPELINE_URL'|Link>"
-        }'
+        # Uncomment this block if you are using the Slack integration
+        # curl -v -X POST $SLACK_URL \
+        # -H "Content-Type: application/json" \
+        # -d \
+        # '{
+        #     "text": ">⚠️ *Terraform Warnings:* `'$CI_JOB_NAME'` - <'$CI_PIPELINE_URL'|Link>"
+        # }'
 
     fi
 else

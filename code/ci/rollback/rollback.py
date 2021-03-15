@@ -26,7 +26,9 @@ print(f'[#] Rollback Request Successful - Version: {active_version} activated')
 
 text = f'🔄 *Rapid Rollback Completed:* `{service_name}`\n>*Rollback Version [Fastly]:* v{active_version}\n>Details: {sha} - <{pipeline_url}|Link>\n>Now that Rapid Rollback has completed, please view the following runbook on what to do next.\n><add_a_runbook_link_here|Runbook 📘>'
 
-SLACK_URL = os.environ['SLACK_URL']
-slack = requests.post(url=SLACK_URL, json={'text': text})
+print(text)
 
-print(f'Slack Status: {slack.status_code}')
+# Uncomment this block if you are using the Slack integration
+# SLACK_URL = os.environ['SLACK_URL']
+# slack = requests.post(url=SLACK_URL, json={'text': text})
+# print(f'Slack Status: {slack.status_code}')

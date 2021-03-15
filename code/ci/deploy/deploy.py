@@ -43,7 +43,9 @@ if r.status_code != 200:
 
 text = f">🟢 *Activated:* `{FASTLY_SERVICE}` - {CI_COMMIT_SHORT_SHA} - v{version} - <{CI_PIPELINE_URL}|Link>"
 
-SLACK_URL = os.environ['SLACK_URL']
-slack = requests.post(url=SLACK_URL, json={'text': text})
+print(text)
 
-print(f'Slack Status: {slack.status_code}')
+# Uncomment this block if you are using the Slack integration
+# SLACK_URL = os.environ['SLACK_URL']
+# slack = requests.post(url=SLACK_URL, json={'text': text})
+# print(f'Slack Status: {slack.status_code}')
