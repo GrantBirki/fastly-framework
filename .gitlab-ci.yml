@@ -12,15 +12,24 @@ stages:
 default:
   image: <GitLab URL>/<repo>/<image>:<tag>
 
-# add alert-bp to bypass this stage in commit message
-merge-alert:
+# Sample job to run on every commit to the merge request
+start:
   stage: repo-check 🗺️
-  script: sh code/ci/repo-check/merge-alert.sh
+  script: echo "no-operation"
   only:
     refs:
       - merge_requests
-    variables:
-      - $CI_COMMIT_MESSAGE !~ /alert-bp/
+
+# optional - Use this job if you want to get Slack alerts when a new merge request is created
+# add alert-bp to bypass this stage in commit message
+# merge-alert:
+#   stage: repo-check 🗺️
+#   script: sh code/ci/repo-check/merge-alert.sh
+#   only:
+#     refs:
+#       - merge_requests
+#     variables:
+#       - $CI_COMMIT_MESSAGE !~ /alert-bp/
 
 # approval is an optional job - only leave in if you use ServiceNow and want to send automated Change Requests to it
 # add approval-bp to your commit message to bypass this stage
@@ -81,6 +90,7 @@ merge-alert:
 # You could potentially have dozens of services or perhaps even one. This guide demonstrates
 # have a nonprod and a production Fastly service.
 # docs/new-service.md
+# make sure to change example.com to your own domain
 
 # ----- Example Service (nonprod.example.com) ----- # add this line with a simple service name
 
