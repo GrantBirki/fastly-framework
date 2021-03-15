@@ -5,7 +5,8 @@
 # Get Top Level Directory
 rdir=`pwd`
 
-JOB_NAME=`echo $CI_JOB_NAME | sed s/"rapid-rollback:"//` || exit 1
+# Get's the FASTLY_SERVICE without the leading "rapid-rollback:" bit
+FASTLY_SERVICE=`echo $CI_JOB_NAME | sed s/"rapid-rollback:"//` || exit 1
 
 echo "\033[34;1m ########## Starting RAPID ROLLBACK stage for $FASTLY_SERVICE ##########\033[0;m" || exit 1
 
@@ -19,13 +20,14 @@ if [ $? -ne 0 ];
 
         echo "\033[31;1mERROR: Could not complete RAPID ROLLBACK.\033[0;m\n"
 
+        # Uncomment this block if you are using the Slack integration
         # CURL to post Slack message
-        curl -v -X POST $SLACK_URL \
-        -H "Content-Type: application/json" \
-        -d \
-        '{
-            "text": ">❌ *Rapid Rollback Failed:* `'$FASTLY_SERVICE'` - '$CI_COMMIT_SHORT_SHA' - <'$CI_PIPELINE_URL'|Link>"
-        }'
+        # curl -v -X POST $SLACK_URL \
+        # -H "Content-Type: application/json" \
+        # -d \
+        # '{
+        #     "text": ">❌ *Rapid Rollback Failed:* `'$FASTLY_SERVICE'` - '$CI_COMMIT_SHORT_SHA' - <'$CI_PIPELINE_URL'|Link>"
+        # }'
 
         exit 1
 

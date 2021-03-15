@@ -5,8 +5,8 @@
 # Get Top Level Directory
 rdir=`pwd`
 
-# Get's the JOB_NAME without the leading "apply:" bit
-JOB_NAME=`echo $CI_JOB_NAME | sed s/"apply:"//`
+# Get's the FASTLY_SERVICE without the leading "apply:" bit
+FASTLY_SERVICE=`echo $CI_JOB_NAME | sed s/"apply:"//`
 
 echo "\033[34;1m ########## Starting Apply stage for $FASTLY_SERVICE ##########\033[0;m"
 
@@ -48,13 +48,14 @@ then
         cat check
         echo "\033[31;1mERROR: Terraform should not destroy Fastly services. Expected results are Add/Change only.\033[0;m\n"
 
+        # Uncomment this block if you are using the Slack integration
         # CURL to post Slack message
-        curl -v -X POST $SLACK_URL \
-        -H "Content-Type: application/json" \
-        -d \
-        '{
-            "text": ">❌ *Apply Stage Failed:* `'$FASTLY_SERVICE'`"
-        }'
+        # curl -v -X POST $SLACK_URL \
+        # -H "Content-Type: application/json" \
+        # -d \
+        # '{
+        #     "text": ">❌ *Apply Stage Failed:* `'$FASTLY_SERVICE'`"
+        # }'
 
         exit 1
         
@@ -67,13 +68,14 @@ then
         terraform apply -lock-timeout=240s -input=false $TF_FILE
         terraform output -json > $FASTLY_SERVICE"_output.json"
 
+        # Uncomment this block if you are using the Slack integration
         # CURL to post Slack message
-        curl -v -X POST $SLACK_URL \
-        -H "Content-Type: application/json" \
-        -d \
-        '{
-            "text": ">🟢 *Apply Stage Completed with Warnings:* `'$FASTLY_SERVICE'` - '$CI_COMMIT_SHORT_SHA' - <'$CI_PIPELINE_URL'|Link>"
-        }'
+        # curl -v -X POST $SLACK_URL \
+        # -H "Content-Type: application/json" \
+        # -d \
+        # '{
+        #     "text": ">🟢 *Apply Stage Completed with Warnings:* `'$FASTLY_SERVICE'` - '$CI_COMMIT_SHORT_SHA' - <'$CI_PIPELINE_URL'|Link>"
+        # }'
 
     fi
     

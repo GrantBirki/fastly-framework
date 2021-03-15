@@ -4,8 +4,8 @@
 # Get Top Level Directory
 rdir=`pwd`
 
-# Get's the JOB_NAME without the leading "deploy:" bit
-JOB_NAME=`echo $CI_JOB_NAME | sed s/"deploy:"//`
+# Get's the FASTLY_SERVICE without the leading "deploy:" bit
+FASTLY_SERVICE=`echo $CI_JOB_NAME | sed s/"deploy:"//`
 
 echo "\033[34;1m ########## Starting Deploy stage for $FASTLY_SERVICE ##########\033[0;m"
 
