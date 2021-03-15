@@ -32,7 +32,7 @@ rm config.tf # removes old config.tf and since we are using test.tf
 sed -i "/#ID0003/c\  version_comment = \"$CI_COMMIT_SHORT_SHA-TEST\"" fastly.tf
 
 # Sets the key variables to TEST-{FASTLY_SERVICE} for TF state in dynamoDB and S3
-sed -i "/#ID0001/c\      key            = \"fastly/configs/TEST-$FASTLY_SERVICE/terraform.tfstate\"" test.tf
+sed -i "/#ID0001/c\      key            = \"fastly/services/TEST-$FASTLY_SERVICE/terraform.tfstate\"" test.tf
 
 # Replace service name with TEST-$CI_COMMIT_SHORT_SHA-ci-$servicename - This is for the temp service and testing
 sed -i "/#ID0001/c\  name = \"TEST-$CI_COMMIT_SHORT_SHA-ci-$FASTLY_SERVICE\"" fastly.tf
